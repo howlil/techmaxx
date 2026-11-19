@@ -1,0 +1,140 @@
+@import "tailwindcss";
+@import "../components/arc/foundation.css";
+
+@theme {
+	--font-sans: var(--font-body);
+	--color-page: var(--background);
+	--color-surface: var(--surface);
+	--color-ink: var(--foreground);
+	--color-muted: var(--text-secondary);
+	--color-line: var(--border);
+	--color-accent: var(--accent);
+	--color-sage: var(--accent);
+}
+
+:root {
+	color-scheme: light;
+	--background: #fafafa;
+	--surface: #ffffff;
+	--surface-raised: #ffffff;
+	--surface-muted: #f3f3f3;
+	--foreground: #171717;
+	--text-secondary: #525252;
+	--text-muted: #737373;
+	--border: #dedede;
+	--border-subtle: #ededed;
+	--border-strong: #b8b8b8;
+	--accent: #171717;
+	--accent-strong: #111111;
+	--accent-subtle: #f0f0f0;
+	--accent-foreground: #ffffff;
+	--control-on: #171717;
+	--control-glyph: #ffffff;
+	--control-fill: #262626;
+	--tone-teal: #454545;
+	--tone-sky: #555555;
+	--tone-orchid: #555555;
+	--tone-violet: #444444;
+	--tone-rose: #333333;
+	--tone-amber: #5b5b5b;
+	--tone-green: #3d3d3d;
+	--success: #333333;
+	--warning: #5b5b5b;
+	--danger: #171717;
+	--info: #525252;
+	--series-1: #222222;
+	--series-2: #555555;
+	--series-3: #888888;
+	--series-4: #b0b0b0;
+	--arc-gradient-from: #eeeeee;
+	--arc-gradient-to: #f7f7f7;
+	--arc-gradient: linear-gradient(100deg, var(--arc-gradient-from), var(--arc-gradient-to));
+	--arc-gradient-foreground: #171717;
+	--arc-gradient-soft: linear-gradient(135deg, #fafafa, #f2f2f2);
+	--arc-gradient-line: linear-gradient(100deg, #d6d6d6, #e8e8e8);
+	--arc-gradient-ink: linear-gradient(100deg, #333333, #555555);
+	--focus-outline: #111111;
+	--focus-outline-width: 2px;
+	--focus-outline-offset: 3px;
+	--radius-control: 0.5rem;
+	--radius-panel: 0.75rem;
+	--radius-surface: 1rem;
+	--shadow-resting: 0 1px 2px rgb(0 0 0 / 4%);
+	--shadow-raised: 0 6px 18px rgb(0 0 0 / 7%), 0 1px 3px rgb(0 0 0 / 4%);
+	--shadow-floating: 0 18px 48px rgb(0 0 0 / 14%), 0 3px 10px rgb(0 0 0 / 5%);
+	--font-body: "Inter", "Aptos", "Segoe UI", system-ui, sans-serif;
+	--font-display: var(--font-body);
+	--duration-fast: 150ms;
+	--duration-standard: 200ms;
+}
+
+@layer base {
+	*,
+	*::before,
+	*::after {
+		box-sizing: border-box;
+	}
+
+	* {
+		scrollbar-width: none;
+	}
+
+	*::-webkit-scrollbar {
+		display: none;
+	}
+
+	html {
+		min-width: 320px;
+		background: var(--background);
+		scroll-behavior: smooth;
+	}
+
+	body {
+		min-width: 320px;
+		margin: 0;
+		background: var(--background);
+		color: var(--foreground);
+		font-family: var(--font-body);
+		font-size: 15px;
+		line-height: 1.5;
+		-webkit-font-smoothing: antialiased;
+	}
+
+	button,
+	input,
+	select,
+	textarea {
+		font: inherit;
+	}
+
+	button,
+	a,
+	select {
+		-webkit-tap-highlight-color: transparent;
+	}
+
+	a {
+		color: inherit;
+		text-decoration: none;
+	}
+
+	::selection {
+		background: #e5e5e5;
+		color: var(--foreground);
+	}
+}
+
+:where(button, a, input, select, textarea, summary):focus-visible {
+	outline: 2px solid var(--focus-outline);
+	outline-offset: 3px;
+}
+
+[hidden] {
+	display: none !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+	html {
+		scroll-behavior: auto;
+	}
+}

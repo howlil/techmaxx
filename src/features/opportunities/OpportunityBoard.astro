@@ -1,0 +1,8 @@
+---
+import OpportunityPage from "./OpportunityPage";
+import { opportunities } from "./demo-data";
+
+const now = Date.now();
+---
+
+<OpportunityPage opportunities={opportunities} now={now} client:load />

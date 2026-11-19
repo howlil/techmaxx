@@ -1,0 +1,80 @@
+.card {
+	height: 100%;
+}
+
+.content {
+	display: grid;
+	gap: 12px;
+	margin-top: 12px;
+}
+
+.topline,
+.eligibility,
+.location,
+.deadline {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+}
+
+.topline,
+.eligibility {
+	justify-content: space-between;
+}
+
+.location,
+.deadline {
+	min-width: 0;
+	color: var(--text-secondary);
+	font-size: 12px;
+}
+
+.location span {
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+.location svg,
+.deadline svg {
+	flex: none;
+	color: var(--text-muted);
+}
+
+.scores {
+	display: grid;
+	grid-template-columns: repeat(2, minmax(0, 1fr));
+	gap: 12px;
+	padding-top: 12px;
+	border-top: 1px solid var(--border-subtle);
+}
+
+.scores > div {
+	display: grid;
+	gap: 3px;
+}
+
+.scores span {
+	color: var(--text-muted);
+	font-size: 11px;
+}
+
+.scores strong {
+	font-size: 14px;
+	font-weight: 650;
+	font-variant-numeric: tabular-nums;
+}
+
+.actions {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 3px;
+}
+
+@media (max-width: 420px) {
+	.topline,
+	.eligibility {
+		align-items: flex-start;
+		flex-direction: column;
+	}
+}

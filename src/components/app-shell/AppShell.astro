@@ -1,0 +1,339 @@
+---
+import Icon from "../Icon.astro";
+
+interface Props {
+	active: "opportunities" | "runs";
+}
+
+const { active } = Astro.props;
+---
+
+<div class="app-frame" data-app-frame data-sidebar-state="expanded">
+	<aside class="sidebar" aria-label="Navigasi utama">
+		<div class="sidebar-header">
+			<a class="brand" href="/" aria-label="Scoutroom, ke Peluang">
+				<span class="brand-mark" aria-hidden="true"><span></span><span></span><span></span></span>
+				<span class="brand-copy">
+					<strong>Scoutroom</strong>
+				</span>
+			</a>
+			<button
+				class="sidebar-toggle"
+				type="button"
+				data-sidebar-toggle
+				aria-label="Mode navigasi ringkas"
+				aria-pressed="false"
+				title="Ciutkan navigasi"
+			>
+				<Icon name="chevron-left" size={18} />
+			</button>
+		</div>
+
+		<nav class="sidebar-nav" id="workflow-navigation" aria-label="Workflow">
+			<a
+				class:list={["nav-link", active === "opportunities" && "is-active"]}
+				href="/"
+				aria-current={active === "opportunities" ? "page" : undefined}
+				title="Peluang"
+			>
+				<Icon name="radar" size={18} />
+				<span class="nav-label">Peluang</span>
+			</a>
+			<a
+				class:list={["nav-link", active === "runs" && "is-active"]}
+				href="/runs"
+				aria-current={active === "runs" ? "page" : undefined}
+				title="Riwayat scrape"
+			>
+				<Icon name="history" size={18} />
+				<span class="nav-label">Riwayat scrape</span>
+			</a>
+		</nav>
+
+	</aside>
+
+	<div class="main-area">
+		<main class="page-content">
+			<slot />
+		</main>
+	</div>
+</div>
+
+<script>
+	const frame = document.querySelector<HTMLElement>("[data-app-frame]");
+	const toggle = document.querySelector<HTMLButtonElement>("[data-sidebar-toggle]");
+	const storageKey = "scoutroom.sidebar-collapsed.v1";
+
+	if (frame && toggle) {
+		const syncToggle = () => {
+			const collapsed = frame.dataset.sidebarState === "collapsed";
+			toggle.setAttribute("aria-pressed", String(collapsed));
+			toggle.title = collapsed ? "Perluas navigasi" : "Ciutkan navigasi";
+		};
+
+		try {
+			if (window.localStorage.getItem(storageKey) === "true") frame.dataset.sidebarState = "collapsed";
+		} catch {
+			// Keep the toggle usable when browser storage is unavailable.
+		}
+		syncToggle();
+
+		toggle.addEventListener("click", () => {
+			frame.dataset.sidebarState = frame.dataset.sidebarState === "collapsed" ? "expanded" : "collapsed";
+			syncToggle();
+			try {
+				window.localStorage.setItem(storageKey, String(frame.dataset.sidebarState === "collapsed"));
+			} catch {
+				// The sidebar still collapses for this page when storage is unavailable.
+			}
+		});
+	}
+</script>
+
+<style>
+	.app-frame {
+		min-height: 100vh;
+	}
+
+	.sidebar {
+		position: fixed;
+		inset: 0 auto 0 0;
+		z-index: 10;
+		display: flex;
+		width: 248px;
+		flex-direction: column;
+		padding: 28px 18px 20px;
+		border-right: 1px solid var(--border);
+		background: var(--surface);
+	}
+
+	.sidebar-header {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		gap: 8px;
+		margin: 0 7px 32px;
+	}
+
+	.brand {
+		display: flex;
+		min-width: 0;
+		flex: 1;
+		align-items: center;
+		gap: 12px;
+	}
+
+	.brand-mark {
+		display: flex;
+		width: 38px;
+		height: 38px;
+		align-items: center;
+		justify-content: center;
+		gap: 2px;
+		border-radius: 12px;
+		background: var(--accent);
+	}
+
+	.brand-mark span {
+		width: 3px;
+		border-radius: 4px;
+		background: var(--accent-foreground);
+	}
+
+	.brand-mark span:nth-child(1) { height: 10px; }
+	.brand-mark span:nth-child(2) { height: 17px; }
+	.brand-mark span:nth-child(3) { height: 13px; }
+	.brand-copy { display: block; }
+
+	.brand-copy strong {
+		font-size: 16px;
+		font-weight: 600;
+	}
+
+	.sidebar-toggle {
+		display: grid;
+		width: 36px;
+		height: 36px;
+		flex: none;
+		place-items: center;
+		padding: 0;
+		border: 1px solid var(--border);
+		border-radius: var(--radius-control);
+		background: transparent;
+		color: var(--text-secondary);
+		cursor: pointer;
+		transition: background-color var(--duration-fast) var(--ease-standard), color var(--duration-fast) var(--ease-standard);
+	}
+
+	.sidebar-toggle:hover {
+		background: var(--surface-muted);
+		color: var(--foreground);
+	}
+
+	.sidebar-toggle svg {
+		transition: transform var(--duration-standard) var(--ease-standard);
+	}
+
+	.sidebar-nav {
+		display: grid;
+		gap: 4px;
+	}
+
+	.nav-link {
+		display: flex;
+		min-height: 44px;
+		align-items: center;
+		gap: 12px;
+		padding: 0 11px;
+		border: 1px solid transparent;
+		border-radius: 10px;
+		color: var(--text-secondary);
+		font-size: 14px;
+		font-weight: 520;
+		transition: background-color 150ms ease, color 150ms ease, border-color 150ms ease;
+	}
+
+	.nav-link:hover {
+		background: var(--surface-muted);
+		color: var(--foreground);
+	}
+
+	.nav-link.is-active {
+		border-color: var(--border);
+		background: var(--surface-muted);
+		color: var(--foreground);
+		font-weight: 600;
+	}
+
+	.nav-link.is-active svg { color: var(--accent); }
+
+	.app-frame[data-sidebar-state="collapsed"] .sidebar {
+		width: 76px;
+		padding-inline: 10px;
+	}
+
+	.app-frame[data-sidebar-state="collapsed"] .sidebar-header {
+		flex-direction: column;
+		margin: 0 0 28px;
+	}
+
+	.app-frame[data-sidebar-state="collapsed"] .brand {
+		flex: none;
+		justify-content: center;
+	}
+
+	.app-frame[data-sidebar-state="collapsed"] .brand-copy {
+		display: none;
+	}
+
+	.app-frame[data-sidebar-state="collapsed"] .sidebar-toggle svg {
+		transform: rotate(180deg);
+	}
+
+	.app-frame[data-sidebar-state="collapsed"] .nav-link {
+		position: relative;
+		justify-content: center;
+		padding-inline: 0;
+	}
+
+	.app-frame[data-sidebar-state="collapsed"] .nav-label {
+		position: absolute;
+		width: 1px;
+		height: 1px;
+		overflow: hidden;
+		clip-path: inset(50%);
+		white-space: nowrap;
+	}
+
+	.main-area {
+		min-width: 0;
+		min-height: 100vh;
+		margin-left: 248px;
+	}
+
+	.app-frame[data-sidebar-state="collapsed"] .main-area {
+		margin-left: 76px;
+	}
+
+	.page-content {
+		width: min(100%, 1360px);
+		margin: 0 auto;
+		padding: 24px clamp(20px, 3vw, 40px) 48px;
+	}
+
+	@media (max-width: 760px) {
+		.sidebar {
+			position: static;
+			display: grid;
+			width: auto;
+			grid-template-columns: 1fr;
+			gap: 12px;
+			padding: 14px 18px 12px;
+			border-right: 0;
+			border-bottom: 1px solid var(--border);
+		}
+
+		.sidebar-header { margin: 0; }
+		.sidebar-toggle { display: none; }
+		.brand { margin: 0; }
+		.sidebar-nav {
+			grid-column: 1 / -1;
+			grid-template-columns: repeat(2, minmax(0, 1fr));
+			gap: 6px;
+		}
+
+		.nav-link { min-height: 42px; }
+		.main-area { margin-left: 0; }
+		.page-content { padding-top: 20px; }
+
+		.app-frame[data-sidebar-state="collapsed"] .sidebar {
+			position: static;
+			display: grid;
+			width: auto;
+			grid-template-columns: 1fr;
+			gap: 12px;
+			padding: 14px 18px 12px;
+			border-right: 0;
+			border-bottom: 1px solid var(--border);
+		}
+
+		.app-frame[data-sidebar-state="collapsed"] .sidebar-header {
+			flex-direction: row;
+			justify-content: flex-start;
+			gap: 12px;
+			margin: 0;
+		}
+
+		.app-frame[data-sidebar-state="collapsed"] .brand {
+			flex: 1;
+			justify-content: flex-start;
+		}
+
+		.app-frame[data-sidebar-state="collapsed"] .brand-copy { display: block; }
+		.app-frame[data-sidebar-state="collapsed"] .sidebar-toggle { display: none; }
+		.app-frame[data-sidebar-state="collapsed"] .nav-link { justify-content: flex-start; padding-inline: 11px; }
+		.app-frame[data-sidebar-state="collapsed"] .nav-label {
+			position: static;
+			width: auto;
+			height: auto;
+			overflow: visible;
+			clip-path: none;
+			white-space: normal;
+		}
+		.app-frame[data-sidebar-state="collapsed"] .main-area { margin-left: 0; }
+	}
+
+	@media (max-width: 420px) {
+		.sidebar { padding-inline: 14px; }
+		.nav-link { gap: 8px; padding-inline: 9px; font-size: 12px; }
+		.page-content { padding-inline: 14px; }
+
+		.app-frame[data-sidebar-state="collapsed"] .sidebar { padding-inline: 14px; }
+		.app-frame[data-sidebar-state="collapsed"] .nav-link { gap: 8px; padding-inline: 9px; font-size: 12px; }
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		.sidebar-toggle,
+		.sidebar-toggle svg { transition-duration: 0.01ms; }
+	}
+</style>

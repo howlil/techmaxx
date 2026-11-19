@@ -1,0 +1,107 @@
+.card { min-width: 0; }
+
+.content {
+	display: grid;
+	gap: 20px;
+	margin-top: 16px;
+}
+
+.summaryMeta {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 12px;
+	padding-bottom: 16px;
+	border-bottom: 1px solid var(--border-subtle);
+	color: var(--text-secondary);
+}
+
+.metaDetails {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	justify-content: flex-end;
+	gap: 8px 16px;
+	font-size: var(--text-xs);
+}
+
+.eligibility,
+.duration {
+	display: flex;
+	align-items: baseline;
+	gap: 4px;
+}
+
+.eligibility > strong,
+.duration > strong {
+	color: var(--foreground);
+	font-size: var(--text-sm);
+	font-weight: 600;
+	font-variant-numeric: tabular-nums;
+}
+
+.section {
+	display: grid;
+	gap: 12px;
+	padding-bottom: 16px;
+	border-bottom: 1px solid var(--border-subtle);
+}
+
+.section:last-child {
+	padding-bottom: 0;
+	border-bottom: 0;
+}
+
+.sectionHeading {
+	display: flex;
+	align-items: center;
+}
+
+.sectionHeading h3 {
+	margin: 0;
+	font-size: 14px;
+	font-weight: 650;
+}
+
+.grades {
+	display: grid;
+	gap: 10px;
+}
+
+.gradeRow {
+	display: grid;
+	grid-template-columns: minmax(0, 1fr) 28px;
+	align-items: center;
+	gap: 10px;
+}
+
+.gradeRow > strong {
+	color: var(--text-secondary);
+	font-size: 12px;
+	font-weight: 650;
+	font-variant-numeric: tabular-nums;
+	text-align: right;
+}
+
+.sources {
+	margin: 0;
+	color: var(--text-secondary);
+	font-size: var(--text-sm);
+	line-height: 1.6;
+}
+
+.notes {
+	display: grid;
+	gap: 8px;
+	padding-left: 18px;
+	margin: 0;
+	color: var(--text-secondary);
+	font-size: 12px;
+}
+
+.notes li::marker { color: var(--accent); }
+
+@media (max-width: 720px) {
+	.summaryMeta { align-items: flex-start; flex-direction: column; }
+	.metaDetails { justify-content: flex-start; }
+}

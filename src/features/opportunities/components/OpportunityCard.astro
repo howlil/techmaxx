@@ -1,0 +1,223 @@
+---
+import Icon from "../../../components/Icon.astro";
+import { deadlineLabel, opportunityKindLabels, type Opportunity } from "../model";
+
+interface Props {
+	opportunity: Opportunity;
+}
+
+const { opportunity } = Astro.props;
+---
+
+<article
+	class="opportunity-card"
+	data-opportunity-card
+	data-opportunity-id={opportunity.id}
+	data-region={opportunity.region}
+	data-kind={opportunity.kind}
+	data-eligibility={opportunity.eligibility}
+	data-fit={opportunity.fitScore}
+	data-deadline={opportunity.deadline}
+	data-search={`${opportunity.title} ${opportunity.organization} ${opportunity.locationLabel} ${opportunity.summary} ${opportunity.tags.join(" ")}`}
+>
+	<button
+		class="opportunity-card__open"
+		type="button"
+		data-open-opportunity
+		data-opportunity-id={opportunity.id}
+		aria-haspopup="dialog"
+		aria-label={`Buka detail ${opportunity.title}`}
+	>
+		<div class="opportunity-card__meta">
+			<span class="kind-label">{opportunityKindLabels[opportunity.kind]}</span>
+			<span class="grade-pill">GRADE {opportunity.qualityGrade}</span>
+		</div>
+		<h3>{opportunity.title}</h3>
+		<p class="opportunity-card__org">{opportunity.organization}</p>
+		<p class="opportunity-card__summary">{opportunity.summary}</p>
+		<div class="opportunity-card__facts">
+			<span><Icon name="pin" size={14} />{opportunity.locationLabel}</span>
+			<span><Icon name="clock" size={14} />{deadlineLabel(opportunity.deadline)}</span>
+		</div>
+		<div class="opportunity-card__open-hint">Lihat detail <Icon name="arrow" size={14} /></div>
+	</button>
+
+	<div class="opportunity-card__footer">
+		<span class:list={["eligibility-pill", opportunity.eligibility === "review" && "is-review"]}>
+			{opportunity.eligibilityLabel}
+		</span>
+		<div class="opportunity-card__scores">
+			<span class="fit-score"><strong>{opportunity.fitScore}</strong><small>FIT</small></span>
+			<button
+				class="icon-action"
+				type="button"
+				data-save
+				data-opportunity-id={opportunity.id}
+				data-title={opportunity.title}
+				aria-pressed="false"
+				aria-label={`Simpan ${opportunity.title}`}
+			>
+				<Icon name="bookmark" size={16} /><span class="icon-action__label">Simpan</span>
+			</button>
+			<button
+				class="icon-action"
+				type="button"
+				data-review
+				data-opportunity-id={opportunity.id}
+				data-title={opportunity.title}
+				aria-pressed="false"
+				aria-label={`Tandai review ${opportunity.title} selesai`}
+			>
+				<Icon name="check" size={16} /><span class="icon-action__label">Review</span>
+			</button>
+		</div>
+	</div>
+</article>
+
+<style>
+	.opportunity-card {
+		min-width: 0;
+		border: 1px solid var(--color-line);
+		border-radius: var(--radius-card);
+		background: var(--color-surface);
+		box-shadow: var(--shadow-card);
+		transition: border-color 150ms ease, box-shadow 150ms ease, transform 150ms ease;
+	}
+
+	.opportunity-card:hover {
+		border-color: #cbd5c8;
+		box-shadow: 0 8px 22px rgba(30, 37, 31, 0.065);
+		transform: translateY(-1px);
+	}
+
+	.opportunity-card__open {
+		display: block;
+		width: 100%;
+		padding: 19px 19px 13px;
+		border: 0;
+		background: transparent;
+		text-align: left;
+		cursor: pointer;
+	}
+
+	.opportunity-card__meta,
+	.opportunity-card__facts,
+	.opportunity-card__footer,
+	.opportunity-card__scores {
+		display: flex;
+		align-items: center;
+	}
+
+	.opportunity-card__meta { justify-content: space-between; gap: 8px; }
+	.kind-label { color: var(--color-muted); font-size: 11px; font-weight: 620; }
+
+	.grade-pill {
+		padding: 4px 7px;
+		border: 1px solid #e4e8e1;
+		border-radius: 6px;
+		color: #596357;
+		font-size: 9px;
+		font-weight: 720;
+		letter-spacing: 0.08em;
+	}
+
+	.opportunity-card h3 {
+		margin: 13px 0 2px;
+		font-size: 18px;
+		font-weight: 640;
+		letter-spacing: -0.035em;
+		line-height: 1.25;
+	}
+
+	.opportunity-card__org { margin: 0; color: var(--color-muted); font-size: 11px; }
+	.opportunity-card__summary { min-height: 40px; margin: 13px 0 15px; color: #515950; font-size: 12px; line-height: 1.55; }
+
+	.opportunity-card__facts {
+		flex-wrap: wrap;
+		gap: 8px 16px;
+		color: #687067;
+		font-size: 10px;
+	}
+
+	.opportunity-card__facts span { display: inline-flex; align-items: center; gap: 5px; }
+	.opportunity-card__facts svg { color: #879084; }
+
+	.opportunity-card__open-hint {
+		display: flex;
+		align-items: center;
+		gap: 6px;
+		margin-top: 14px;
+		color: var(--color-sage);
+		font-size: 10px;
+		font-weight: 650;
+	}
+
+	.opportunity-card__open:hover .opportunity-card__open-hint { gap: 9px; }
+
+	.opportunity-card__footer {
+		min-height: 54px;
+		justify-content: space-between;
+		gap: 10px;
+		padding: 9px 15px;
+		border-top: 1px solid #eef0ed;
+	}
+
+	.eligibility-pill {
+		max-width: 55%;
+		padding: 5px 8px;
+		overflow: hidden;
+		border-radius: 999px;
+		background: var(--color-sage-soft);
+		color: #4e604b;
+		font-size: 10px;
+		font-weight: 600;
+		text-overflow: ellipsis;
+		white-space: nowrap;
+	}
+
+	.eligibility-pill.is-review { border: 1px solid #e5e8e1; background: #f5f6f3; color: #5d645c; }
+
+	.opportunity-card__scores { gap: 2px; }
+
+	.fit-score {
+		display: flex;
+		align-items: baseline;
+		gap: 4px;
+		margin-right: 5px;
+		color: #4f5d4b;
+	}
+
+	.fit-score strong { font-size: 14px; font-weight: 730; font-variant-numeric: tabular-nums; }
+	.fit-score small { color: var(--color-muted); font-size: 8px; font-weight: 700; letter-spacing: 0.1em; }
+
+	.icon-action {
+		display: inline-flex;
+		min-width: 32px;
+		min-height: 32px;
+		align-items: center;
+		justify-content: center;
+		gap: 5px;
+		padding: 0 6px;
+		border: 1px solid transparent;
+		border-radius: 8px;
+		background: transparent;
+		color: #71796f;
+		cursor: pointer;
+	}
+
+	.icon-action:hover { border-color: var(--color-line); background: #f8f9f7; color: var(--color-ink); }
+	.icon-action[aria-pressed="true"] { color: var(--color-sage); }
+	.icon-action__label { font-size: 9px; }
+
+	@media (max-width: 520px) {
+		.opportunity-card__open { padding: 16px 15px 11px; }
+		.opportunity-card h3 { font-size: 16px; }
+		.opportunity-card__footer { padding-inline: 11px; }
+		.icon-action { min-width: 30px; padding-inline: 4px; }
+		.icon-action__label { display: none; }
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		.opportunity-card, .opportunity-card__open-hint { transition: none; }
+	}
+</style>

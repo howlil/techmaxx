@@ -1,0 +1,54 @@
+---
+type IconName =
+	| "radar"
+	| "history"
+	| "search"
+	| "bookmark"
+	| "check"
+	| "clock"
+	| "pin"
+	| "calendar"
+	| "external"
+	| "close"
+	| "arrow"
+	| "filter"
+	| "spark"
+	| "chevron-left";
+
+interface Props {
+	name: IconName;
+	size?: number;
+	class?: string;
+}
+
+const { name, size = 16, class: className } = Astro.props;
+---
+
+<svg
+	class={className}
+	width={size}
+	height={size}
+	viewBox="0 0 24 24"
+	fill="none"
+	stroke="currentColor"
+	stroke-width="1.7"
+	stroke-linecap="round"
+	stroke-linejoin="round"
+	aria-hidden="true"
+	focusable="false"
+>
+	{name === "radar" && <><circle cx="12" cy="12" r="8.5" /><path d="M12 12 18 6M12 3.5v2M20.5 12h-2M12 20.5v-2M3.5 12h2" /><circle cx="12" cy="12" r="1.2" fill="currentColor" stroke="none" /></>}
+	{name === "history" && <><path d="M3.7 8.2A8.5 8.5 0 1 1 4 16" /><path d="M3.5 3.8v4.8h4.8M12 7.5V12l3 1.8" /></>}
+	{name === "search" && <><circle cx="10.8" cy="10.8" r="6.8" /><path d="m16 16 4.5 4.5" /></>}
+	{name === "bookmark" && <><path d="M6.5 4.5h11v16l-5.5-3.6-5.5 3.6v-16Z" /></>}
+	{name === "check" && <><path d="m5 12.5 4.2 4L19 7" /></>}
+	{name === "clock" && <><circle cx="12" cy="12" r="8.5" /><path d="M12 7v5l3.3 2" /></>}
+	{name === "pin" && <><path d="M19 10c0 5-7 11-7 11S5 15 5 10a7 7 0 1 1 14 0Z" /><circle cx="12" cy="10" r="2.2" /></>}
+	{name === "calendar" && <><rect x="4" y="5.5" width="16" height="15" rx="2" /><path d="M8 3.5v4M16 3.5v4M4 10h16" /></>}
+	{name === "external" && <><path d="M13 5h6v6M19 5l-9 9" /><path d="M18 13v5.5a1.5 1.5 0 0 1-1.5 1.5h-11A1.5 1.5 0 0 1 4 18.5v-11A1.5 1.5 0 0 1 5.5 6H11" /></>}
+	{name === "close" && <><path d="m6 6 12 12M18 6 6 18" /></>}
+	{name === "arrow" && <><path d="M5 12h13M13 6l6 6-6 6" /></>}
+	{name === "filter" && <><path d="M4 6h16M7 12h10M10 18h4" /></>}
+	{name === "spark" && <><path d="m12 3 1.7 6.3L20 11l-6.3 1.7L12 19l-1.7-6.3L4 11l6.3-1.7L12 3Z" /><path d="m19 16 .7 2.3L22 19l-2.3.7L19 22l-.7-2.3L16 19l2.3-.7L19 16Z" /></>}
+	{name === "chevron-left" && <><path d="m14.5 5-7 7 7 7" /></>}
+</svg>

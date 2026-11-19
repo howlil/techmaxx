@@ -1,0 +1,165 @@
+.details {
+	display: grid;
+	gap: 20px;
+}
+
+.summaryLine {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	gap: 10px;
+}
+
+.location {
+	display: inline-flex;
+	align-items: center;
+	gap: 6px;
+	color: var(--text-secondary);
+	font-size: 12px;
+}
+
+.location svg { color: var(--text-muted); }
+
+.metrics {
+	display: grid;
+	grid-template-columns: repeat(2, minmax(0, 1fr));
+	gap: 10px;
+}
+
+.qualityMetric,
+.deadlineMetric {
+	display: grid;
+	align-content: start;
+	gap: 8px;
+	padding: 14px;
+	border: 1px solid var(--border-subtle);
+	border-radius: var(--radius-panel);
+	background: var(--surface-muted);
+}
+
+.qualityMetric > div {
+	display: grid;
+	justify-items: start;
+	gap: 6px;
+}
+
+.deadlineMetric > span:last-child {
+	margin: 0;
+	color: var(--text-muted);
+	font-size: 11px;
+}
+
+.deadlineMetric strong {
+	font-size: 15px;
+	font-weight: 650;
+}
+
+.metricLabel {
+	color: var(--text-muted);
+	font-size: 10px;
+	font-weight: 650;
+	letter-spacing: 0.07em;
+	text-transform: uppercase;
+}
+
+.section {
+	display: grid;
+	gap: 11px;
+	padding-bottom: 18px;
+	border-bottom: 1px solid var(--border-subtle);
+}
+
+.section:last-child {
+	padding-bottom: 0;
+	border-bottom: 0;
+}
+
+.section h3 {
+	margin: 0;
+	color: var(--foreground);
+	font-size: 14px;
+	font-weight: 650;
+}
+
+.evidenceList,
+.notesList {
+	display: grid;
+	gap: 10px;
+	padding: 0 0 0 18px;
+	margin: 0;
+	color: var(--text-secondary);
+	font-size: 12px;
+}
+
+.evidenceList li::marker,
+.notesList li::marker { color: var(--accent); }
+
+.evidenceList strong {
+	display: block;
+	margin-bottom: 2px;
+	color: var(--foreground);
+	font-size: 12px;
+	font-weight: 600;
+}
+
+.evidenceList p,
+.fitNote,
+.evidenceNote,
+.checkedNote {
+	margin: 0;
+	color: var(--text-secondary);
+	font-size: 12px;
+}
+
+.sourceCard {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 12px;
+	padding: 12px;
+	border: 1px solid var(--border-subtle);
+	border-radius: var(--radius-control);
+	background: var(--surface);
+}
+
+.sourceCard > div {
+	display: grid;
+	gap: 4px;
+	min-width: 0;
+}
+
+.sourceCard > div strong {
+	overflow-wrap: anywhere;
+	color: var(--foreground);
+	font-size: 12px;
+	font-weight: 600;
+}
+
+.sourceCard a {
+	display: inline-flex;
+	flex: none;
+	align-items: center;
+	gap: 6px;
+	color: var(--accent-strong);
+	font-size: 12px;
+	font-weight: 600;
+}
+
+.sourceCard a:hover { text-decoration: underline; }
+
+.checkedNote {
+	color: var(--text-muted);
+	font-size: 11px;
+}
+
+.tags {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 6px;
+	margin-top: 2px;
+}
+
+@media (max-width: 440px) {
+	.metrics { grid-template-columns: 1fr; }
+	.sourceCard { align-items: flex-start; flex-direction: column; }
+}

@@ -1,0 +1,242 @@
+---
+import Icon from "../../../components/Icon.astro";
+import { deadlineLabel, formatDate, opportunityKindLabels, type Opportunity } from "../model";
+
+interface Props {
+	opportunities: Opportunity[];
+}
+
+const { opportunities } = Astro.props;
+---
+
+<dialog class="opportunity-dialog" id="opportunity-dialog" aria-labelledby="detail-heading">
+	<div class="opportunity-dialog__topline">
+		<span>DETAIL PELUANG</span>
+		<button class="dialog-close" type="button" data-close-detail aria-label="Tutup detail">
+			<Icon name="close" size={18} /><span>Tutup</span>
+		</button>
+	</div>
+	<div class="opportunity-dialog__body" id="detail-body"></div>
+</dialog>
+
+{opportunities.map((opportunity) => (
+	<template id={`detail-${opportunity.id}`}>
+		<div class="detail-content">
+			<div class="detail-content__eyebrow">
+				<span>{opportunityKindLabels[opportunity.kind]}</span>
+				<span class="detail-content__dot">·</span>
+				<span>{opportunity.organization}</span>
+			</div>
+			<h2 id="detail-heading" tabindex="-1">{opportunity.title}</h2>
+			<p class="detail-content__summary">{opportunity.summary}</p>
+			<div class="detail-location"><Icon name="pin" size={15} />{opportunity.locationLabel}</div>
+
+			<div class="detail-metrics">
+				<div class="detail-metric">
+					<span class="detail-metric__label">TENGGAT</span>
+					<strong><Icon name="clock" size={15} />{deadlineLabel(opportunity.deadline)}</strong>
+					<small>{formatDate(opportunity.deadline)}</small>
+				</div>
+				<div class="detail-metric">
+					<span class="detail-metric__label">KUALITAS SCRAPE</span>
+					<strong>{opportunity.qualityGrade}<span class="detail-metric__grade">Grade contoh</span></strong>
+					<small>Rubrik penilaian belum ditetapkan</small>
+				</div>
+				<div class="detail-metric">
+					<span class="detail-metric__label">KECOCOKAN PRIBADI</span>
+					<strong>{opportunity.fitScore}<span class="detail-metric__grade">Fit contoh</span></strong>
+					<small>Skor ilustratif, belum dihitung sistem</small>
+				</div>
+			</div>
+
+			<section class="detail-section">
+				<div class="detail-section__heading">
+					<span class="detail-section__number">01</span>
+					<h3>Kelayakan lulusan</h3>
+				</div>
+				<div class:list={["detail-eligibility", opportunity.eligibility === "review" && "is-review"]}>
+					<span class="detail-eligibility__marker" aria-hidden="true"></span>
+					<strong>{opportunity.eligibilityLabel}</strong>
+				</div>
+				<ul class="evidence-list">
+					{opportunity.eligibilityEvidence.map((evidence) => (
+						<li><span>{evidence.label}</span><p>{evidence.text}</p></li>
+					))}
+				</ul>
+			</section>
+
+			<section class="detail-section">
+				<div class="detail-section__heading">
+					<span class="detail-section__number">02</span>
+					<h3>Bukti sumber</h3>
+				</div>
+				<div class="source-card">
+					<div><span class="source-card__label">SUMBER CONTOH</span><strong>{opportunity.sourceName}</strong></div>
+					<a href={opportunity.sourceUrl} target="_blank" rel="noreferrer">
+						Buka sumber <Icon name="external" size={14} />
+					</a>
+				</div>
+				<p class="evidence-note">Tenggat: {opportunity.deadlineEvidence}</p>
+				<p class="checked-note">Terakhir dicek {opportunity.checkedAt}</p>
+			</section>
+
+			<section class="detail-section detail-section--last">
+				<div class="detail-section__heading">
+					<span class="detail-section__number">03</span>
+					<h3>Catatan</h3>
+				</div>
+				<p class="fit-note">{opportunity.fitNote}</p>
+				<ul class="notes-list">
+					{opportunity.notes.map((note) => <li>{note}</li>)}
+				</ul>
+				<div class="tag-list">
+					{opportunity.tags.map((tag) => <span>{tag}</span>)}
+				</div>
+			</section>
+
+			<div class="detail-actions">
+				<button class="detail-action" type="button" data-save data-opportunity-id={opportunity.id} data-title={opportunity.title} aria-pressed="false">
+					<Icon name="bookmark" size={16} /><span class="icon-action__label">Simpan</span>
+				</button>
+				<button class="detail-action detail-action--primary" type="button" data-review data-opportunity-id={opportunity.id} data-title={opportunity.title} aria-pressed="false">
+					<Icon name="check" size={16} /><span class="icon-action__label">Tandai sudah direview</span>
+				</button>
+			</div>
+		</div>
+	</template>
+))}
+
+<style>
+	.opportunity-dialog {
+		position: fixed;
+		inset: 18px 18px 18px auto;
+		width: min(470px, calc(100vw - 36px));
+		max-width: none;
+		max-height: calc(100dvh - 36px);
+		margin: 0;
+		padding: 0;
+		overflow: hidden;
+		border: 1px solid #e5e8e2;
+		border-radius: 18px;
+		background: var(--color-surface);
+		box-shadow: var(--shadow-soft);
+		color: var(--color-ink);
+	}
+
+	.opportunity-dialog::backdrop { background: rgba(29, 34, 29, 0.2); backdrop-filter: blur(2px); }
+	.opportunity-dialog[open] { display: flex; flex-direction: column; animation: detail-enter 170ms ease-out; }
+
+	@keyframes detail-enter {
+		from { opacity: 0; transform: translateX(8px); }
+		to { opacity: 1; transform: translateX(0); }
+	}
+
+	.opportunity-dialog__topline {
+		display: flex;
+		min-height: 54px;
+		align-items: center;
+		justify-content: space-between;
+		padding: 0 22px;
+		border-bottom: 1px solid var(--color-line);
+		color: var(--color-muted);
+		font-size: 9px;
+		font-weight: 720;
+		letter-spacing: 0.13em;
+	}
+
+	.dialog-close {
+		display: inline-flex;
+		min-height: 34px;
+		align-items: center;
+		gap: 5px;
+		padding: 0 8px;
+		border: 0;
+		border-radius: 8px;
+		background: transparent;
+		color: #667064;
+		font-size: 11px;
+		cursor: pointer;
+	}
+
+	.dialog-close:hover { background: #f4f6f2; }
+	.opportunity-dialog__body { overflow: auto; overscroll-behavior: contain; padding: 22px 24px 24px; }
+	.detail-content__eyebrow { display: flex; flex-wrap: wrap; gap: 7px; color: var(--color-muted); font-size: 10px; font-weight: 600; }
+	.detail-content__dot { color: #b2b8b0; }
+
+	.detail-content h2 {
+		margin: 11px 0 7px;
+		font-size: 26px;
+		font-weight: 650;
+		letter-spacing: -0.045em;
+		line-height: 1.12;
+	}
+
+	.detail-content__summary { margin: 0; color: #5e665d; font-size: 13px; line-height: 1.6; }
+	.detail-location { display: inline-flex; align-items: center; gap: 6px; margin-top: 12px; color: #6f786d; font-size: 11px; }
+	.detail-location svg { color: var(--color-sage); }
+
+	.detail-metrics {
+		display: grid;
+		grid-template-columns: 1fr 1fr;
+		gap: 1px;
+		margin: 22px 0 24px;
+		overflow: hidden;
+		border: 1px solid var(--color-line);
+		border-radius: 12px;
+		background: var(--color-line);
+	}
+
+	.detail-metric { min-height: 88px; padding: 12px; background: #fbfcfa; }
+	.detail-metric:first-child { grid-column: 1 / -1; }
+	.detail-metric__label { display: block; margin-bottom: 7px; color: var(--color-muted); font-size: 8px; font-weight: 700; letter-spacing: 0.11em; }
+	.detail-metric strong { display: flex; align-items: center; gap: 6px; font-size: 14px; font-weight: 700; }
+	.detail-metric strong svg { color: var(--color-sage); }
+	.detail-metric small { display: block; margin-top: 3px; color: var(--color-muted); font-size: 9px; line-height: 1.4; }
+	.detail-metric__grade { color: var(--color-muted); font-size: 10px; font-weight: 550; }
+
+	.detail-section { padding: 0 0 20px; margin: 0 0 20px; border-bottom: 1px solid #eaede8; }
+	.detail-section--last { margin-bottom: 0; border: 0; }
+	.detail-section__heading { display: flex; align-items: center; gap: 9px; margin-bottom: 13px; }
+	.detail-section__number { color: var(--color-muted); font-size: 9px; font-weight: 700; font-variant-numeric: tabular-nums; }
+	.detail-section h3 { margin: 0; font-size: 13px; font-weight: 680; letter-spacing: -0.015em; }
+
+	.detail-eligibility { display: flex; align-items: center; gap: 8px; color: #4f624c; font-size: 11px; }
+	.detail-eligibility.is-review { color: #5f665d; }
+	.detail-eligibility__marker { width: 7px; height: 7px; border-radius: 50%; background: #778c71; }
+	.detail-eligibility.is-review .detail-eligibility__marker { border: 1px solid #879085; background: transparent; }
+
+	.evidence-list, .notes-list { display: grid; gap: 11px; padding: 0; margin: 12px 0 0; list-style: none; }
+	.evidence-list li { padding-left: 13px; border-left: 1px solid #dce3d9; }
+	.evidence-list li > span { color: var(--color-muted); font-size: 10px; font-weight: 650; }
+	.evidence-list p, .notes-list li, .fit-note { margin: 3px 0 0; color: #596158; font-size: 11px; line-height: 1.6; }
+
+	.source-card { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 11px 12px; border: 1px solid var(--color-line); border-radius: 10px; background: #fbfcfa; }
+	.source-card > div { display: grid; gap: 3px; }
+	.source-card__label { color: var(--color-muted); font-size: 8px; font-weight: 700; letter-spacing: 0.1em; }
+	.source-card strong { font-size: 10px; font-weight: 620; }
+	.source-card a { display: inline-flex; flex: none; align-items: center; gap: 4px; color: var(--color-sage); font-size: 10px; font-weight: 650; }
+	.evidence-note { margin: 10px 0 0; color: #5e665d; font-size: 10px; line-height: 1.5; }
+	.checked-note { margin: 7px 0 0; color: var(--color-muted); font-size: 9px; }
+	.fit-note { margin: 0; }
+	.notes-list { gap: 6px; padding-left: 15px; list-style: disc; }
+	.notes-list li { padding-left: 1px; }
+	.tag-list { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 12px; }
+	.tag-list span { padding: 4px 7px; border: 1px solid #e4e8e1; border-radius: 999px; color: #687064; font-size: 9px; }
+
+	.detail-actions { display: flex; gap: 8px; padding-top: 18px; border-top: 1px solid #eaede8; }
+	.detail-action { display: inline-flex; min-height: 38px; align-items: center; justify-content: center; gap: 7px; padding: 0 12px; border: 1px solid var(--color-line); border-radius: 9px; background: white; color: #566050; font-size: 10px; font-weight: 620; cursor: pointer; }
+	.detail-action:hover { background: #f7f8f5; }
+	.detail-action--primary { border-color: #6a7c66; background: var(--color-sage); color: white; }
+	.detail-action--primary:hover { background: #54674f; }
+	.detail-action[aria-pressed="true"] { border-color: #cfd8ca; background: var(--color-sage-soft); color: #40523f; }
+
+	@media (max-width: 600px) {
+		.opportunity-dialog { inset: auto 0 0; width: 100vw; max-height: min(88dvh, 760px); border: 0; border-radius: 18px 18px 0 0; }
+		.opportunity-dialog[open] { animation: detail-sheet 170ms ease-out; }
+		@keyframes detail-sheet { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+		.opportunity-dialog__body { padding: 19px 18px 22px; }
+		.detail-content h2 { font-size: 23px; }
+	}
+
+	@media (prefers-reduced-motion: reduce) { .opportunity-dialog[open] { animation: none; } }
+</style>

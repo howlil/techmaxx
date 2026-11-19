@@ -1,0 +1,33 @@
+---
+import AppShell from "../components/app-shell/AppShell.astro";
+import "../styles/global.css";
+
+interface Props {
+	title: string;
+	active: "opportunities" | "runs";
+}
+
+const { title, active } = Astro.props;
+---
+
+<!doctype html>
+<html lang="id">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<meta name="generator" content={Astro.generator} />
+		<meta name="robots" content="noindex, nofollow" />
+		<meta name="theme-color" content="#fafafa" />
+		<meta
+			name="description"
+			content="Workspace pribadi untuk meninjau peluang dan riwayat scout."
+		/>
+		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+		<title>{title} — Scoutroom</title>
+	</head>
+	<body>
+		<AppShell active={active}>
+			<slot />
+		</AppShell>
+	</body>
+</html>

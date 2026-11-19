@@ -1,0 +1,107 @@
+---
+import Icon from "../../../components/Icon.astro";
+import { formatRunDate, type ScrapeRun } from "../model";
+
+interface Props {
+	run: ScrapeRun;
+}
+
+const { run } = Astro.props;
+const totalGraded = run.gradeCounts.A + run.gradeCounts.B + run.gradeCounts.C;
+const grades = (["A", "B", "C"] as const).map((grade) => ({
+	grade,
+	count: run.gradeCounts[grade],
+	percent: totalGraded ? Math.round((run.gradeCounts[grade] / totalGraded) * 100) : 0,
+	opacity: grade === "A" ? 1 : grade === "B" ? 0.67 : 0.38,
+}));
+---
+
+<article class="run-summary">
+	<div class="run-summary__top">
+		<div>
+			<p class="run-summary__kicker">RUN SUMMARY <span>·</span> {run.id.toUpperCase()}</p>
+			<h2 id="selected-run-title">{run.label}</h2>
+			<p class="run-summary__date"><Icon name="calendar" size={14} />{formatRunDate(run.date)} · {run.dateLabel.split("·").at(-1)?.trim()}</p>
+		</div>
+		<span class:list={["run-status", `run-status--${run.status}`]}><span></span>{run.statusLabel}</span>
+	</div>
+
+	<p class="run-summary__source-group">{run.sourceGroup}</p>
+
+	<div class="run-metrics">
+		<div><span>Sumber dipindai</span><strong>{String(run.sourceCount).padStart(2, "0")}</strong></div>
+		<div><span>Peluang ditemukan</span><strong>{String(run.foundCount).padStart(2, "0")}</strong></div>
+		<div><span>Lulusan memenuhi syarat</span><strong>{String(run.eligibleCount).padStart(2, "0")}</strong></div>
+		<div><span>Durasi contoh</span><strong>{run.duration}</strong></div>
+	</div>
+
+	<section class="run-summary__section">
+		<div class="run-summary__section-heading"><span>01</span><h3>Kualitas hasil scrape</h3></div>
+		<p class="run-summary__hint">Distribusi fixture berdasarkan grade A–C. Rubrik belum diterapkan.</p>
+		<div class="grade-distribution">
+			{grades.map(({ grade, count, percent, opacity }) => (
+				<div class="grade-row">
+					<span class="grade-row__label">Grade {grade}</span>
+					<span class="grade-meter"><span style={`--bar-width:${percent}%;--bar-opacity:${opacity}`}></span></span>
+					<strong>{count}</strong>
+				</div>
+			))}
+		</div>
+	</section>
+
+	<section class="run-summary__section">
+		<div class="run-summary__section-heading"><span>02</span><h3>Sumber yang dipantau</h3></div>
+		<div class="source-tags">
+			{run.sources.map((source) => <span>{source}</span>)}
+		</div>
+	</section>
+
+	<section class="run-summary__section run-summary__section--last">
+		<div class="run-summary__section-heading"><span>03</span><h3>Catatan run</h3></div>
+		<ul class="run-notes">
+			{run.notes.map((note) => <li>{note}</li>)}
+		</ul>
+	</section>
+</article>
+
+<style>
+	.run-summary { min-width: 0; padding: 24px; border: 1px solid var(--color-line); border-radius: 15px; background: white; box-shadow: var(--shadow-card); }
+	.run-summary__top { display: flex; align-items: flex-start; justify-content: space-between; gap: 14px; }
+	.run-summary__kicker { margin: 0; color: var(--color-muted); font-size: 8px; font-weight: 720; letter-spacing: .12em; }
+	.run-summary__kicker span { padding: 0 4px; color: #b4bbb1; }
+	.run-summary h2 { margin: 8px 0 5px; font-size: 21px; font-weight: 650; letter-spacing: -.04em; line-height: 1.2; }
+	.run-summary__date { display: flex; align-items: center; gap: 6px; margin: 0; color: var(--color-muted); font-size: 10px; }
+	.run-summary__date svg { color: #7b8a76; }
+	.run-status { display: inline-flex; flex: none; align-items: center; gap: 6px; padding: 5px 8px; border: 1px solid #dfe6dc; border-radius: 999px; background: #f2f5f0; color: #586951; font-size: 9px; font-weight: 650; }
+	.run-status > span { width: 6px; height: 6px; border-radius: 50%; background: #74896f; }
+	.run-status--partial, .run-status--review { border-color: #e4e7e1; background: #f6f7f5; color: #666e64; }
+	.run-status--partial > span, .run-status--review > span { background: #8d9689; }
+	.run-summary__source-group { margin: 17px 0 0; padding-top: 12px; border-top: 1px solid #edf0eb; color: #667063; font-size: 10px; }
+
+	.run-metrics { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1px; margin: 16px 0 22px; overflow: hidden; border: 1px solid #e5e9e3; border-radius: 10px; background: #e5e9e3; }
+	.run-metrics div { display: grid; min-height: 70px; align-content: center; gap: 3px; padding: 10px 12px; background: #fafbf9; }
+	.run-metrics span { color: var(--color-muted); font-size: 9px; }
+	.run-metrics strong { color: #354033; font-size: 19px; font-weight: 650; letter-spacing: -.04em; font-variant-numeric: tabular-nums; }
+
+	.run-summary__section { padding: 0 0 20px; margin: 0 0 19px; border-bottom: 1px solid #eaede8; }
+	.run-summary__section--last { padding-bottom: 0; margin-bottom: 0; border: 0; }
+	.run-summary__section-heading { display: flex; align-items: center; gap: 9px; }
+	.run-summary__section-heading > span { color: var(--color-muted); font-size: 8px; font-weight: 700; }
+	.run-summary__section-heading h3 { margin: 0; font-size: 12px; font-weight: 670; }
+	.run-summary__hint { margin: 6px 0 12px 22px; color: var(--color-muted); font-size: 9px; }
+	.grade-distribution { display: grid; gap: 9px; margin-left: 22px; }
+	.grade-row { display: grid; grid-template-columns: 54px 1fr 18px; align-items: center; gap: 9px; }
+	.grade-row__label { color: #6f786d; font-size: 9px; }
+	.grade-meter { display: block; height: 6px; overflow: hidden; border-radius: 999px; background: #f0f2ef; }
+	.grade-meter > span { display: block; width: var(--bar-width); height: 100%; border-radius: inherit; background: rgba(97,114,94,var(--bar-opacity)); }
+	.grade-row > strong { color: #677062; font-size: 9px; font-weight: 650; text-align: right; }
+	.source-tags { display: flex; flex-wrap: wrap; gap: 6px; margin: 12px 0 0 22px; }
+	.source-tags span { padding: 5px 8px; border: 1px solid #e4e8e1; border-radius: 999px; color: #687164; font-size: 9px; }
+	.run-notes { display: grid; gap: 7px; padding-left: 37px; margin: 11px 0 0; color: #5e665c; font-size: 10px; line-height: 1.5; }
+
+	@media (max-width: 600px) {
+		.run-summary { padding: 18px 15px; }
+		.run-summary__top { flex-direction: column; }
+		.run-summary h2 { font-size: 19px; }
+	}
+</style>

@@ -18,8 +18,8 @@ export interface Opportunity {
 	eligibility: EligibilityState;
 	eligibilityLabel: string;
 	eligibilityEvidence: OpportunityEvidence[];
-	qualityGrade: ScrapeGrade;
-	fitScore: number;
+	qualityGrade: ScrapeGrade | null;
+	fitScore: number | null;
 	fitNote: string;
 	deadline: string;
 	deadlineEvidence: string;

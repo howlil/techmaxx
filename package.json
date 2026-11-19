@@ -10,7 +10,10 @@
     "build": "astro build",
     "preview": "astro preview",
     "astro": "astro",
-    "check": "astro check"
+    "check": "astro check",
+    "db:migrate:local": "wrangler d1 migrations apply techmaxx --local --config wrangler.deploy.jsonc",
+    "db:migrate:remote": "wrangler d1 migrations apply techmaxx --remote --config wrangler.deploy.jsonc",
+    "deploy": "bun run build && wrangler deploy --config wrangler.deploy.jsonc"
   },
   "dependencies": {
     "@astrojs/cloudflare": "^14.4.8",

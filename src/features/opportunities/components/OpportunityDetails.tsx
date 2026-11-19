@@ -25,14 +25,23 @@ export default function OpportunityDetails({ opportunity, now }: OpportunityDeta
 				<div className={styles.qualityMetric}>
 					<span className={styles.metricLabel}>Kualitas scrape</span>
 					<div>
-						<Badge size="md" tone="neutral">Grade {opportunity.qualityGrade}</Badge>
+						<Badge size="md" tone="neutral">
+							{opportunity.qualityGrade ? `Grade ${opportunity.qualityGrade}` : "Belum dinilai"}
+						</Badge>
 					</div>
 				</div>
-				<MetricCard
-					label="Fit pribadi"
-					value={opportunity.fitScore}
-					context="Nilai fixture; belum dihitung sistem."
-				/>
+				{opportunity.fitScore === null ? (
+					<div className={styles.qualityMetric}>
+						<span className={styles.metricLabel}>Fit pribadi</span>
+						<strong>Belum dinilai</strong>
+					</div>
+				) : (
+					<MetricCard
+						label="Fit pribadi"
+						value={opportunity.fitScore}
+						context="Nilai terpisah dari grade scrape."
+					/>
+				)}
 				<div className={styles.deadlineMetric}>
 					<span className={styles.metricLabel}>Tenggat</span>
 					<strong>{deadlineLabel(opportunity.deadline, now)}</strong>

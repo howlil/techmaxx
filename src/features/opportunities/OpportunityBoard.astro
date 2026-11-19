@@ -1,8 +1,10 @@
 ---
 import OpportunityPage from "./OpportunityPage";
-import { opportunities } from "./demo-data";
+import { loadOpportunities } from "./repository";
+import { getD1Database } from "../../server/cloudflare";
 
 const now = Date.now();
+const { records, source } = await loadOpportunities(getD1Database());
 ---
 
-<OpportunityPage opportunities={opportunities} now={now} client:load />
+<OpportunityPage opportunities={records} now={now} dataSource={source} client:load />

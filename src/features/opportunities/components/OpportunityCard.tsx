@@ -90,11 +90,11 @@ export default function OpportunityCard({
 				<div className={styles.scores}>
 					<div>
 						<span>Kualitas scrape</span>
-						<strong>Grade {opportunity.qualityGrade}</strong>
+						<strong>{opportunity.qualityGrade ? `Grade ${opportunity.qualityGrade}` : "Belum dinilai"}</strong>
 					</div>
 					<div>
 						<span>Fit pribadi</span>
-						<strong>{opportunity.fitScore}</strong>
+						<strong>{opportunity.fitScore ?? "—"}</strong>
 					</div>
 				</div>
 			</div>

@@ -1,6 +1,9 @@
 ---
 import RunHistoryPage from "./RunHistoryPage";
-import { scrapeRuns } from "./demo-data";
+import { loadScrapeRuns } from "./repository";
+import { getD1Database } from "../../server/cloudflare";
+
+const { records, source } = await loadScrapeRuns(getD1Database());
 ---
 
-<RunHistoryPage runs={scrapeRuns} client:load />
+<RunHistoryPage runs={records} dataSource={source} client:load />

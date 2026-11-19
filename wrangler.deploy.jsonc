@@ -1,0 +1,21 @@
+{
+	"$schema": "./node_modules/wrangler/config-schema.json",
+	"name": "techmaxx",
+	"compatibility_date": "2026-11-19",
+	"main": "./dist/server/entry.mjs",
+	"assets": {
+		"binding": "ASSETS",
+		"directory": "./dist/client"
+	},
+	"d1_databases": [
+		{
+			"binding": "DB",
+			"database_name": "techmaxx",
+			"database_id": "ea10a200-063a-4572-9325-dce2208cfec3",
+			"migrations_dir": "migrations"
+		}
+	],
+	"observability": {
+		"enabled": true
+	}
+}

@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from "react";
+import { FixtureNotice } from "../../components/app-shell/FixtureNotice";
 import Button from "../../components/arc/button/button";
 import { Checkbox } from "../../components/arc/checkbox/checkbox";
 import ChipGroup from "../../components/arc/chip-group/chip-group";
@@ -66,9 +67,10 @@ function persistIds(key: string, values: string[]): boolean {
 interface OpportunityPageProps {
 	opportunities: Opportunity[];
 	now: number;
+	dataSource: "fixture" | "live";
 }
 
-export default function OpportunityPage({ opportunities, now }: OpportunityPageProps) {
+export default function OpportunityPage({ opportunities, now, dataSource }: OpportunityPageProps) {
 	const [search, setSearch] = useState("");
 	const [region, setRegion] = useState<RegionFilter>("all");
 	const [kind, setKind] = useState<KindFilter>("all");
@@ -137,11 +139,10 @@ export default function OpportunityPage({ opportunities, now }: OpportunityPageP
 					(!reviewedOnly || reviewedIds.includes(opportunity.id))
 				);
 			})
-			.sort((left, right) =>
-				sortOrder === "deadline"
-					? left.deadline.localeCompare(right.deadline)
-					: right.fitScore - left.fitScore,
-			);
+			.sort((left, right) => {
+				if (sortOrder === "deadline") return left.deadline.localeCompare(right.deadline);
+				return (right.fitScore ?? -1) - (left.fitScore ?? -1);
+			});
 	}, [
 		opportunities,
 		search,
@@ -211,6 +212,11 @@ export default function OpportunityPage({ opportunities, now }: OpportunityPageP
 
 	return (
 		<div className={styles.page}>
+			<FixtureNotice label={dataSource === "fixture" ? "Data contoh" : "Data live"}>
+				{dataSource === "fixture"
+					? "Belum ada D1 binding; halaman memakai fixture lokal."
+					: "Peluang dimuat dari D1 setelah ingest Muse."}
+			</FixtureNotice>
 			<header>
 				<h1 className={styles.pageTitle} id="opportunity-inbox-title">Semua peluang</h1>
 			</header>

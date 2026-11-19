@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { FixtureNotice } from "../../components/app-shell/FixtureNotice";
 import type { BadgeTone } from "../../components/arc/badge/badge";
 import Badge from "../../components/arc/badge/badge";
 import { EmptyState } from "../../components/arc/empty-state/empty-state";
@@ -15,9 +16,10 @@ const statusTone: Record<ScrapeRunStatus, BadgeTone> = {
 
 interface RunHistoryPageProps {
 	runs: ScrapeRun[];
+	dataSource: "fixture" | "live";
 }
 
-export default function RunHistoryPage({ runs }: RunHistoryPageProps) {
+export default function RunHistoryPage({ runs, dataSource }: RunHistoryPageProps) {
 	const [selectedRunId, setSelectedRunId] = useState(runs[0]?.id ?? "");
 	const selectedRun = runs.find((run) => run.id === selectedRunId) ?? runs[0];
 
@@ -36,6 +38,11 @@ export default function RunHistoryPage({ runs }: RunHistoryPageProps) {
 
 	return (
 		<div className={styles.page}>
+			<FixtureNotice label={dataSource === "fixture" ? "Data contoh" : "Data live"}>
+				{dataSource === "fixture"
+					? "Belum ada D1 binding; riwayat memakai fixture lokal."
+					: "Riwayat dimuat dari D1 setelah ingest Muse."}
+			</FixtureNotice>
 			<h1 className="sr-only">Riwayat scrape</h1>
 
 			<section className={styles.layout} aria-label="Riwayat dan ringkasan run">

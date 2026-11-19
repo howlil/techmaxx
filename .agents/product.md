@@ -11,18 +11,18 @@ B3: Selecting an opportunity opens its detail panel; the panel starts closed, sh
 B4: The scrape-history route shows recent run status, time, source count, and discovered-result count.
 X1 (B2): filters return no results → show a recoverable empty state and reset action.
 X2 (B1,B3): eligibility or scrape quality is uncertain → label it for review and show the evidence; never present uncertainty as eligible.
-X3 (B1,B4): opportunity provenance is identified as an example in expanded source details; run history remains labeled as fixture data; never imply Muse supplied the records.
+X3 (B1,B4): fixture provenance stays visibly labeled; live records are only presented as D1-backed after the authenticated ingest path, and the app never claims that Muse supplied records before that transport is verified.
 
 ## Constraints
 C1: The workspace is for one owner and must be placed behind Cloudflare Access before real data is deployed.
 C2: The first workflow covers global/online opportunities and Indonesian opportunities in Jakarta only; only graduate-eligible or uncertain opportunities are shown.
 C3: Scrape-quality grade (A–C) and personal-fit score are distinct values; no grading formula has been supplied.
-C4: Muse outbound HTTP/API capability is unverified; current records are fixtures.
+C4: Muse outbound HTTP/API compatibility is unverified; the v1 ingest boundary and D1 persistence exist, while the current sample records remain fixtures unless a live D1 binding is populated.
 Q1: Internal-tool accessibility baseline: keyboard operation, visible focus, semantic status announcements, and WCAG 2.2 AA contrast/target guidance.
 
 ## Scope
-In: Astro app shell; opportunity list/detail; search, filters, sorting, saved/reviewed state; scrape-run history; clearly marked sample data.
-Out: live Muse ingestion, D1 schema/migrations, Cloudflare Access account configuration/deployment, job tracker, news workflow, and automatic grade/fit calculation.
+In: Astro app shell; opportunity list/detail; search, filters, sorting, saved/reviewed state; scrape-run history; authenticated Muse ingest contract; D1 persistence; D1-backed reads with fixture fallback; clearly marked sample data.
+Out: verifying Muse's real outbound transport/payload compatibility, Cloudflare Access account configuration and production deployment, job tracker, news workflow, and automatic grade/fit calculation.
 
 ## Proof
 P1 (B1,B2): Given the fixture set, the page shows the correct location, eligibility, quality grade, and fit score for each record.
@@ -33,6 +33,6 @@ P5 (X2,C3): Unknown eligibility and grade C remain visibly reviewable and are ne
 P6 (Q1): Core controls work by keyboard, focus is visible, and result changes are announced.
 
 ## Assumptions
-A1 [non-blocking]: Until Muse HTTP capability and an ingestion contract are verified, fixture data is the only data source.
+A1 [blocking]: Muse's real HTTP capability and payload compatibility must be verified before production ingestion; until then, the v1 endpoint is only an adapter boundary and fixture data remains the safe local fallback.
 A2 [non-blocking]: Grades and fit scores in fixtures are illustrative; the app does not compute them.
 A3 [non-blocking]: Cloudflare Access will be configured outside this repository before any live personal data is exposed.
